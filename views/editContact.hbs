@@ -1,0 +1,45 @@
+<div class="container-fluid h-100 mainBackground">
+    <div class="row align-items-center h-100">
+
+      <div class="container col-md-4">
+        <div class="card p-5">
+          <h1 class="text-center">{{#if contact}}Update Contact{{else}}Create Contact{{/if}}</h1>
+          <hr class="my-4">
+          <article class="card-body">
+            <form method="POST">
+
+              <div class="form-group">
+                  <div class="input-group">
+                		<div class="input-group-prepend">
+                		    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                		 </div>
+                		<input name="name" class="form-control" placeholder="Contact Name" type="text" value={{contact.name}}>
+                	</div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                   </div>
+                    <input name="phone" class="form-control" placeholder="Contact Phone Number" type="text" value={{contact.phone}}>
+                </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <button type="submit" class="btn btn-green mr-2">{{#if contact}}Update Contact{{else}}Create Contact{{/if}}</button>
+                          {{#if contact}}<a class="btn btn-danger" href="/contact">Delete Contact</a>{{/if}}
+                          <a class="btn btn-default float-right" href="/contacts">Cancel</a>
+                      </div>
+                  </div>
+              </div>
+
+            </form>
+          </article>
+        </div>
+      </div>
+
+    </div>
+</div>

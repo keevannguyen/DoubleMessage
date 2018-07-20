@@ -1,1 +1,148 @@
-/* YOUR STYLES HERE */
+/* Green Button */
+.btn-green {
+  color: #ffffff;
+  background-color: #02BE8C;
+  border-color: #29AD8C;
+}
+
+.btn-green:hover,
+.btn-green:focus,
+.btn-green:active,
+.btn-green.active,
+.open .dropdown-toggle.btn-green {
+  color: #ffffff;
+  background-color: #02BE8C;
+  border-color: #29AD8C;
+}
+
+.btn-green:active,
+.btn-green.active,
+.open .dropdown-toggle.btn-green {
+  background-image: none;
+}
+
+.btn-green.disabled,
+.btn-green[disabled],
+fieldset[disabled] .btn-green,
+.btn-green.disabled:hover,
+.btn-green[disabled]:hover,
+fieldset[disabled] .btn-green:hover,
+.btn-green.disabled:focus,
+.btn-green[disabled]:focus,
+fieldset[disabled] .btn-green:focus,
+.btn-green.disabled:active,
+.btn-green[disabled]:active,
+fieldset[disabled] .btn-green:active,
+.btn-green.disabled.active,
+.btn-green[disabled].active,
+fieldset[disabled] .btn-green.active {
+  background-color: #02BE8C;
+  border-color: #29AD8C;
+}
+
+.btn-green .badge {
+  color: #02BE8C;
+  background-color: #ffffff;
+}
+
+
+/* Green Button 2 */
+.btn-green2 {
+  color: #ffffff;
+  background-color: #65C87A;
+  border-color: #65C87A;
+}
+
+.btn-green2:hover,
+.btn-green2:focus,
+.btn-green2:active,
+.btn-green2.active,
+.open .dropdown-toggle.btn-green2 {
+  color: #ffffff;
+  background-color: #4DB864;
+  border-color: #65C87A;
+}
+
+.btn-green2:active,
+.btn-green2.active,
+.open .dropdown-toggle.btn-green2 {
+  background-image: none;
+}
+
+.btn-green2.disabled,
+.btn-green2[disabled],
+fieldset[disabled] .btn-green2,
+.btn-green2.disabled:hover,
+.btn-green2[disabled]:hover,
+fieldset[disabled] .btn-green2:hover,
+.btn-green2.disabled:focus,
+.btn-green2[disabled]:focus,
+fieldset[disabled] .btn-green2:focus,
+.btn-green2.disabled:active,
+.btn-green2[disabled]:active,
+fieldset[disabled] .btn-green2:active,
+.btn-green2.disabled.active,
+.btn-green2[disabled].active,
+fieldset[disabled] .btn-green2.active {
+  background-color: #65C87A;
+  border-color: #65C87A;
+}
+
+.btn-green2 .badge {
+  color: #65C87A;
+  background-color: #ffffff;
+}
+
+/* Speech Bubbles */
+.speech-bubble {
+	position: relative;
+	background: #2ecc71;
+	border-radius: .4em;
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 30px solid transparent;
+	border-left-color: #2ecc71;
+	border-right: 0;
+	border-top: 0;
+	margin-top: -15px;
+	margin-right: -30px;
+}
+
+/* Main CSS */
+html, body {
+  height:100%;
+}
+
+.mainBackground {
+  background-color: #02BE8C;
+}
+
+.mainLogo {
+  height: 100px;
+}
+
+.btn-twitter, .btn-facebook {
+  font-size: 90%!important;
+}
+
+#tableLogo {
+  height: 70px;
+}
+
+#contactsContainer {
+  background-color: white;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+#contactsHeading {
+  background-color: #65c87a;
+  color: white;
+}

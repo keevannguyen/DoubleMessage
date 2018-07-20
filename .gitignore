@@ -40,3 +40,4 @@ jspm_packages
 connect.js
 .idea/
 env.sh
+DS_STORE

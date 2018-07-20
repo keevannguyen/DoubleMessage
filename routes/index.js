@@ -1,10 +1,216 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  // Your code here.
+var models = require("../models/models");
+var Contact = models.Contact;
+var Message = models.Message;
+
+// Twilio Credentials
+var accountSid = process.env.TWILIO_SID;
+var authToken = process.env.TWILIO_AUTH_TOKEN;
+var fromNumber = process.env.MY_TWILIO_NUMBER;
+var twilio = require('twilio');
+var client = new twilio(accountSid, authToken);
+
+// Make Sure User is Logged In
+router.use("/", function(req, res, next) {
+  if (!req.user)
+  {
+    res.redirect("/login");
+  }
+  else
+  {
+    next();
+  }
 });
 
-module.exports = router;
+// GET Contacts Page
+router.get("/contacts", function(req, res, next) {
+  Contact.find( { owner: req.user._id }, function(err, contacts) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      res.render("contacts", {
+        contacts: contacts
+      });
+    }
+  });
+});
 
+// GET Make New Contact Page
+router.get("/contacts/new", function(req, res, next) {
+  res.render("editContact");
+});
+
+// POST Make New Contact Request
+router.post("/contacts/new", function(req, res, next) {
+  if ( !req.body.name || !req.body.phone )
+  {
+    res.status(404);
+  }
+  else
+  {
+    new Contact({
+      name: req.body.name,
+      phone: req.body.phone,
+      owner: req.user._id
+    }).save( function(err) {
+      if (err)
+      {
+        next(err);
+      }
+      else
+      {
+        res.redirect("/contacts");
+      }
+    });
+  }
+});
+
+// GET Edit Contact Page
+router.get("/contacts/:id", function(req, res, next) {
+  Contact.findById(req.params.id, function(err, contact) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      res.render('editContact', {
+        contact: contact
+      });
+    }
+  });
+});
+
+// POST Edit Contact Request
+router.post("/contacts/:id", function(req, res, next) {
+  Contact.findById(req.params.id, function(err, contact) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      contact.name = req.body.name;
+      contact.phone = req.body.phone;
+      contact.save( function(err) {
+        if (err)
+        {
+          next(err);
+        }
+        else
+        {
+          res.redirect("/contacts");
+        }
+      })
+    }
+  });
+});
+
+// GET All Messages From User Page
+router.get("/messages", function(req, res, next) {
+  Message.find( { user: req.user._id } ).populate("contact").exec( function(err, messages) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      res.render("messages", {
+        messages: messages
+      });
+    }
+  });
+});
+
+// GET All Messages to Contact Page
+router.get("/messages/:contactId", function(req, res, next) {
+  Contact.findById( req.params.contactId , function(err, contact) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      Message.find( { user: req.user._id, contact: req.params.contactId } ).populate("contact").exec( function(err, messages) {
+        if (err)
+        {
+          next(err);
+        }
+        else
+        {
+          res.render("messages", {
+            contactName: contact.name,
+            messages: messages
+          });
+        }
+      });
+    }
+  });
+});
+
+// GET Send Message to Contact Page
+router.get("/messages/send/:contactId", function(req, res, next) {
+  Contact.findById( req.params.contactId , function(err, contact) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      res.render("newMessage", {
+        contactName: contact.name
+      });
+    }
+  });
+});
+
+// POST Send Message to Contact Request with Twilio
+router.post("/messages/send/:contactId", function(req, res, next) {
+  Contact.findById( req.params.contactId , function(err, contact) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      var data = {
+        body: req.body.message,
+        to: '+1' + contact.phone,
+        from: fromNumber
+      };
+      client.messages.create(data, function(err, msg) {
+        if (err)
+        {
+          next(err);
+        }
+        else
+        {
+          new Message({
+            created: msg.dateCreated,
+            content: msg.body,
+            user: req.user._id,
+            contact: req.params.contactId,
+            channel: "SMS"
+          }).save( function(err) {
+            if (err)
+            {
+              next(err);
+            }
+            else
+            {
+              res.redirect("/messages");
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+
+module.exports = router;

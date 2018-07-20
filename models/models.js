@@ -1,14 +1,54 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 var connect = process.env.MONGODB_URI;
 
-// If you're getting an error here, it's probably because
-// your connect string is not defined or incorrect.
+mongoose.connection.on("connected", function(){
+  console.log("Connected to MongoDB!");
+});
+
+mongoose.connection.on("error", function(){
+  console.log("Failed to connect to MongoDB.");
+});
+
 mongoose.connect(connect);
 
-// Step 1: Write your schemas here!
-// Remember: schemas are like your blueprint, and models
-// are like your building!
+// Schemas
+var userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  phone: String
+});
 
-// Step 2: Create all of your models here, as properties.
+var contactSchema = new mongoose.Schema({
+  name: String,
+  phone: String,
+  owner: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User'
+  }
+})
 
-// Step 3: Export your models object
+var messageSchema = new mongoose.Schema({
+  created: Date,
+  content: String,
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User'
+  },
+  contact: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Contact'
+  },
+  channel: String
+});
+
+// Models
+var User = mongoose.model("User", userSchema);
+var Contact = mongoose.model("Contact", contactSchema);
+var Message = mongoose.model("Message", messageSchema);
+
+// Exports
+module.exports = {
+  User: User,
+  Contact: Contact,
+  Message: Message
+}

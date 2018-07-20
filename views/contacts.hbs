@@ -1,0 +1,46 @@
+<div class="container-fluid h-100 mainBackground">
+
+  <div class="row align-items-center h-100">
+    <div class="container col-md-10 h-75 p-3" id="contactsContainer">
+
+        <a href="/logout" class="btn btn-danger float-right ml-3 mt-1 p-3">Logout</a>
+        <a href="/messages" class="btn btn-secondary float-right ml-3 mt-1 p-3">View All Messages</a>
+        <a href="/contacts/new" class="btn btn-secondary float-right mt-1 p-3">Add Contact</a>
+        <h1 class="text-center">Message Double <img src="/assets/messageLogo.png" id="tableLogo"/></h1>
+<!-- <form> -->
+      <table class="table table-hover table-light" >
+        <thead>
+          <tr id="contactsHeading">
+            <th scope="col"></th>
+            <th scope="col" colspan="1">Contact Name</th>
+            <th scope="col" colspan="1">Contact Number</th>
+            <th scope="col" colspan="1"></th>
+            <th scope="col" colspan="1"></th>
+            <th scope="col" colspan="1"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {{#each contacts}}
+            <tr>
+              <th>
+                <div class="form-check text-center">
+                  <input class="form-check-input" type="checkbox" name="contact" value="">
+                </div>
+              </th>
+              <th scope="row">{{this.name}}</th>
+              <td>{{this.phone}}</td>
+              <td><a href="/messages/send/{{this._id}}" class="btn btn-green2 pl-5 pr-5">Send Text</a></td>
+              <td><a href="/messages/{{this._id}}" class="btn btn-green2 pl-4 pr-4">View Messages</a></td>
+              <td><a href="/contacts/{{this._id}}" class="btn btn-green2 pl-4 pr-4">Edit Contact</a></td>
+            </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+<!-- </form> -->
+
+    </div>
+  </div>
+
+</div>

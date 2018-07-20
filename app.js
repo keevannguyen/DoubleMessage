@@ -1,18 +1,27 @@
+// Main
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Session
+var session = require('express-session');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var crypto = require("crypto");
+
+// Routes
 var routes = require('./routes/index');
 var auth = require('./routes/auth');
 
-// require node modules here
-// YOUR CODE HERE
+// Models
+var models = require('./models/models');
+var User = models.User;
 
 var app = express();
 
-// view engine setup
+// View Engine Setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -22,24 +31,65 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Passport stuff here
-// YOUR CODE HERE
+// Passport
+app.use(session({ secret: 'This is a very secret message.' }));
 
-// Uncomment these out after you have implemented passport in step 1
-// app.use('/', auth(passport));
-// app.use('/', routes);
+passport.serializeUser(function(user, done) {
+  done(null, user._id);
+});
 
-// catch 404 and forward to error handler
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+// sha256 Hashing For Passwords
+var hashPassword = function(password) {
+  var hash = crypto.createHash("sha256");
+  hash.update(password);
+  return hash.digest("hex");
+}
+
+passport.use(new LocalStrategy(function(username, password, done) {
+  User.findOne({ username: username }, function (err, user) {
+    if (err)
+    {
+      console.log(err);
+      return done(err);
+    }
+
+    if (!user)
+    {
+      return done(null, false);
+    }
+
+    if (user.password !== hashPassword(password))
+    {
+      return done(null, false);
+    }
+
+    return done(null, user);
+  });
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', auth(passport));
+app.use('/', routes);
+
+// Catch 404 and Forward to Error Handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-// error handlers
+// Error Handlers
 
-// development error handler
-// will print stacktrace
+// Development Error Handler
+// Will Print Stacktraces
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -50,8 +100,8 @@ if (app.get('env') === 'development') {
   });
 }
 
-// production error handler
-// no stacktraces leaked to user
+// Production Error Handler
+// No Stacktraces Leaked to User
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
@@ -60,5 +110,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var port = process.env.PORT || 3000;
+app.listen( port );
+console.log( "Listening on Port: " + port );
 
 module.exports = app;
