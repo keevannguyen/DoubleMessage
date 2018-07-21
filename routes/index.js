@@ -163,7 +163,7 @@ router.get("/messages/send/:contactId", function(req, res, next) {
     else
     {
       res.render("newMessage", {
-        contactName: contact.name
+        contactName: contact.name,
       });
     }
   });
@@ -203,7 +203,7 @@ router.post("/messages/send/:contactId", function(req, res, next) {
             }
             else
             {
-              res.redirect("/messages");
+              res.redirect("/messages/" + req.params.contactId);
             }
           });
         }

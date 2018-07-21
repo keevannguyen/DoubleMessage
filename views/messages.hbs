@@ -3,11 +3,29 @@
   <div class="row align-items-center h-100">
     <div class="container col-md-10 h-75 p-3" id="contactsContainer">
 
-        <a href="/logout" class="btn btn-danger float-right ml-3 mt-1 p-3">Logout</a>
-        <a href="/contacts" class="btn btn-secondary float-right mt-1 p-3">Back</a>
-        <h1 class="text-center mt-2">{{#if contactName}}Your Conversation with {{contactName}}{{else}}All Messages Sent{{/if}}</h1>
+      <a href="/logout" class="btn btn-danger float-right ml-3 mt-1 p-3">Logout</a>
+      <a href="/contacts" class="btn btn-secondary float-right mt-1 p-3">Back</a>
+      <h1 class="text-center mt-2">{{#if contactName}}Your Conversation with {{contactName}}{{else}}All Messages Sent{{/if}}</h1>
+
+      <div class="container col-md-12 mt-4 pb-2" id="messageContainer" style="border: #5B6167 solid 5px; border-radius: 4px; height: 85%; overflow-y: scroll;">
+        {{#each messages}}
+
+          <div class="container col-md-8 float-right speech-bubble message mt-2 mr-3 p-3">
+            {{this.content}}
+          </div>
+
+          <!-- <div class="container col-md-8 float-left speech-bubble2 message mt-2 ml-3 p-3">
+            {{this.content}}
+          </div> -->
+
+        {{/each}}
+      </div>
 
     </div>
   </div>
 
 </div>
+
+<script>
+  $("#messageContainer").scrollTop(function() { return this.scrollHeight; });
+</script>
