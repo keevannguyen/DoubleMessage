@@ -12,6 +12,46 @@ var fromNumber = process.env.MY_TWILIO_NUMBER;
 var twilio = require('twilio');
 var client = new twilio(accountSid, authToken);
 
+// POST Receive Message with Twilio Request From Webhooks
+router.post("/messages/receive", function(req, res, next) {
+  User.findOne( { phone: req.body.To }, function(err, user) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      Contact.findOne( { owner: user._id, phone: req.body.From.slice(2) }, function(err, contact) {
+        if (err)
+        {
+          next(err);
+        }
+        else
+        {
+          new Message({
+            created: req.body.dateCreated,
+            content: req.body.Body,
+            user: user._id,
+            contat: contact._id,
+            channel: "SMS",
+            status: "received",
+            from: req.body.From
+          }).save( function(err) {
+            if (err)
+            {
+              next(err);
+            }
+            else
+            {
+              res.end();
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
 // Make Sure User is Logged In
 router.use("/", function(req, res, next) {
   if (!req.user)
@@ -205,46 +245,6 @@ router.post("/messages/send/:contactId", function(req, res, next) {
             else
             {
               res.redirect("/messages/" + req.params.contactId);
-            }
-          });
-        }
-      });
-    }
-  });
-});
-
-// POST Receive Message with Twilio Request
-router.post("/messages/receive", function(req, res, next) {
-  User.findOne( { phone: req.body.To }, function(err, user) {
-    if (err)
-    {
-      next(err);
-    }
-    else
-    {
-      Contact.findOne( { owner: user._id, phone: req.body.From.slice(2) }, function(err, contact) {
-        if (err)
-        {
-          next(err);
-        }
-        else
-        {
-          new Message({
-            created: req.body.dateCreated,
-            content: req.body.Body,
-            user: user._id,
-            contat: contact._id,
-            channel: "SMS",
-            status: "received",
-            from: req.body.From
-          }).save( function(err) {
-            if (err)
-            {
-              next(err);
-            }
-            else
-            {
-              res.end();
             }
           });
         }
