@@ -169,7 +169,7 @@ router.get("/messages/send/:contactId", function(req, res, next) {
   });
 });
 
-// POST Send Message to Contact Request with Twilio
+// POST Send Message to Contact with Twilio Request
 router.post("/messages/send/:contactId", function(req, res, next) {
   Contact.findById( req.params.contactId , function(err, contact) {
     if (err)
@@ -180,7 +180,7 @@ router.post("/messages/send/:contactId", function(req, res, next) {
     {
       var data = {
         body: req.body.message,
-        to: '+1' + contact.phone,
+        to: "+1" + contact.phone,
         from: fromNumber
       };
       client.messages.create(data, function(err, msg) {
@@ -195,7 +195,8 @@ router.post("/messages/send/:contactId", function(req, res, next) {
             content: msg.body,
             user: req.user._id,
             contact: req.params.contactId,
-            channel: "SMS"
+            channel: "SMS",
+            status: "sent",
           }).save( function(err) {
             if (err)
             {
@@ -212,5 +213,44 @@ router.post("/messages/send/:contactId", function(req, res, next) {
   });
 });
 
+// POST Receive Message with Twilio Request
+router.post("/messages/receive", function(req, res, next) {
+  User.findOne( { phone: req.body.To }, function(err, user) {
+    if (err)
+    {
+      next(err);
+    }
+    else
+    {
+      Contact.findOne( { owner: user._id, phone: req.body.From.slice(2) }, function(err, contact) {
+        if (err)
+        {
+          next(err);
+        }
+        else
+        {
+          new Message({
+            created: req.body.dateCreated,
+            content: req.body.Body,
+            user: user._id,
+            contat: contact._id,
+            channel: "SMS",
+            status: "received",
+            from: req.body.From
+          }).save( function(err) {
+            if (err)
+            {
+              next(err);
+            }
+            else
+            {
+              res.end();
+            }
+          });
+        }
+      });
+    }
+  });
+});
 
 module.exports = router;

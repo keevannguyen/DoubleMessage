@@ -3,6 +3,8 @@ var router = express.Router();
 var crypto = require("crypto");
 var models = require('../models/models');
 
+var fromNumber = process.env.MY_TWILIO_NUMBER;
+
 module.exports = function(passport) {
 
   // GET Homepage
@@ -59,7 +61,8 @@ module.exports = function(passport) {
     {
       new models.User({
         username: req.body.username,
-        password: hashPassword(req.body.password)
+        password: hashPassword(req.body.password),
+        phone: fromNumber
       }).save( function(err){
         if(err)
         {

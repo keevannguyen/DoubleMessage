@@ -38,7 +38,9 @@ var messageSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Contact'
   },
-  channel: String
+  channel: String,
+  status: String,
+  from: String
 });
 
 // Models
