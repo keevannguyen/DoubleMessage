@@ -169,6 +169,21 @@ router.get("/messages", function(req, res, next) {
   });
 });
 
+var formattedDate = function(date) {
+   var month = String( date.getMonth() + 1 );
+   month = month.length === 1 ? "0" + month : month;
+
+   var day = String( date.getDate() );
+   day = day.length === 1 ? "0" + day : day;
+
+   var year = String( date.getFullYear() );
+
+   var time = date.toLocaleTimeString('en-us',{timeZoneName:'short'}).split(" ");
+   time = time[0] + time[1] + " " + time[2];
+
+   return month + "/" + day + "/" + year + " at " + time;
+}
+
 // GET All Messages to Contact Page
 router.get("/messages/:contactId", function(req, res, next) {
   Contact.findById( req.params.contactId , function(err, contact) {
@@ -179,7 +194,6 @@ router.get("/messages/:contactId", function(req, res, next) {
     else
     {
       Message.find( { user: req.user._id, contact: req.params.contactId } ).populate("contact").exec( function(err, messages) {
-        console.log(messages);
         if (err)
         {
           next(err);
@@ -188,7 +202,7 @@ router.get("/messages/:contactId", function(req, res, next) {
         {
           res.render("messages", {
             contactName: contact.name,
-            messages: messages
+            messages: messages.map( function(msg){ msg.formattedDate = formattedDate(msg.created); return msg; } )
           });
         }
       });

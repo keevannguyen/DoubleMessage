@@ -11,14 +11,22 @@
         {{#each messages}}
           {{#if this.from}}
 
-            <div class="container col-md-8 float-left speech-bubble2 message mt-2 ml-3 p-3">
+            <div class="container col-md-7 float-left speech-bubble2 message mt-2 ml-3 p-2">
               {{this.content}}
+              <hr class="my-0">
+              <div class="figure-caption float-right metadata">
+                {{this.contact.name}} sent via {{this.channel}}: {{this.formattedDate}}
+              </div>
             </div>
 
           {{else}}
 
-            <div class="container col-md-8 float-right speech-bubble message mt-2 mr-3 p-3">
+            <div class="container col-md-7 float-right speech-bubble message mt-2 mr-3 p-2">
               {{this.content}}
+              <hr class="my-0">
+              <div class="figure-caption float-right metadata">
+                Sent to {{this.contact.name}} via {{this.channel}}: {{this.formattedDate}}
+              </div>
             </div>
 
           {{/if}}

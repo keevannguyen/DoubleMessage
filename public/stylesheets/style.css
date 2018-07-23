@@ -169,7 +169,13 @@ html, body {
 }
 
 .message {
+  font-family: Helvetica;
+  font-weight: 200;
   min-height: 5%;
   overflow-wrap: break-word;
   font-size: 14px;
+}
+
+.speech-bubble.message {
+  color: white;
 }
