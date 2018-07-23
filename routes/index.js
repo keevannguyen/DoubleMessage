@@ -14,6 +14,7 @@ var client = new twilio(accountSid, authToken);
 
 // POST Receive Message with Twilio Request From Webhooks
 router.post("/messages/receive", function(req, res, next) {
+  console.log(req.body);
   User.findOne( { phone: req.body.To }, function(err, user) {
     if (err)
     {
