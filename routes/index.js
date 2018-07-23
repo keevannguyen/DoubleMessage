@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 var models = require("../models/models");
+var User = models.User;
 var Contact = models.Contact;
 var Message = models.Message;
 
@@ -30,7 +31,7 @@ router.post("/messages/receive", function(req, res, next) {
         else
         {
           new Message({
-            created: req.body.dateCreated,
+            created: new Date(),
             content: req.body.Body,
             user: user._id,
             contat: contact._id,
