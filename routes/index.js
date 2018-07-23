@@ -34,7 +34,7 @@ router.post("/messages/receive", function(req, res, next) {
             created: new Date(),
             content: req.body.Body,
             user: user._id,
-            contat: contact._id,
+            contact: contact._id,
             channel: "SMS",
             status: "received",
             from: req.body.From
@@ -179,6 +179,7 @@ router.get("/messages/:contactId", function(req, res, next) {
     else
     {
       Message.find( { user: req.user._id, contact: req.params.contactId } ).populate("contact").exec( function(err, messages) {
+        console.log(messages);
         if (err)
         {
           next(err);
