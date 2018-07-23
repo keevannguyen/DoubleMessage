@@ -157,10 +157,16 @@ html, body {
   height: 70px;
 }
 
+#facebookLoggedIn {
+  border: solid black 1px;
+  border-radius: 4px;
+}
+
 #contactsContainer {
   background-color: white;
   border-radius: 10px;
   font-size: 20px;
+  height: 85%
 }
 
 #contactsHeading {

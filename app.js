@@ -10,6 +10,7 @@ var session = require('express-session');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var crypto = require("crypto");
+var FacebookStrategy = require('passport-facebook');
 
 // Routes
 var routes = require('./routes/index');
@@ -72,6 +73,21 @@ passport.use(new LocalStrategy(function(username, password, done) {
     return done(null, user);
   });
 }));
+
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: "http://localhost:3000/auth/facebook/callback",
+    profileFields: ["id", "displayName", "photos"]
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ facebookId: profile.id }, { username: profile.displayName, phone: process.env.FROM_PHONE, pictureURL: profile.photos[0].value },
+      function (err, user) {
+        return cb(err, user);
+      }
+    );
+  }
+));
 
 app.use(passport.initialize());
 app.use(passport.session());

@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var connect = process.env.MONGODB_URI;
+var findOrCreate = require('mongoose-findorcreate');
 
 mongoose.connection.on("connected", function(){
   console.log("Connected to MongoDB!");
@@ -15,7 +16,9 @@ mongoose.connect(connect);
 var userSchema = new mongoose.Schema({
   username: String,
   password: String,
-  phone: String
+  phone: String,
+  facebookId: String,
+  pictureURL: String
 });
 
 var contactSchema = new mongoose.Schema({
@@ -42,6 +45,9 @@ var messageSchema = new mongoose.Schema({
   status: String,
   from: String
 });
+
+// Functions
+userSchema.plugin(findOrCreate);
 
 // Models
 var User = mongoose.model("User", userSchema);

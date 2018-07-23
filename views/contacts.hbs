@@ -1,8 +1,11 @@
 <div class="container-fluid h-100 mainBackground">
 
   <div class="row align-items-center h-100">
-    <div class="container col-md-10 h-75 p-3" id="contactsContainer">
 
+    <div class="container col-md-10 p-3" id="contactsContainer">
+        {{#if user.facebookId}}
+          <h5 class="float-left mt-2"><img src="{{user.pictureURL}}" id="facebookLoggedIn"/> Logged in as {{user.username}}</h5>
+        {{/if}}
         <a href="/logout" class="btn btn-danger float-right ml-3 mt-1 p-3">Logout</a>
         <a href="/messages" class="btn btn-secondary float-right ml-3 mt-1 p-3">View All Messages</a>
         <a href="/contacts/new" class="btn btn-secondary float-right mt-1 p-3">Add Contact</a>

@@ -75,8 +75,18 @@ router.get("/contacts", function(req, res, next) {
     }
     else
     {
-      res.render("contacts", {
-        contacts: contacts
+      User.findById(req.user._id, function(err, user){
+        if (err)
+        {
+          next(err);
+        }
+        else
+        {
+          res.render("contacts", {
+            contacts: contacts,
+            user: user
+          });
+        }
       });
     }
   });
