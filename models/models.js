@@ -18,7 +18,8 @@ var userSchema = new mongoose.Schema({
   password: String,
   phone: String,
   facebookId: String,
-  pictureURL: String
+  pictureURL: String,
+  twitterId: String
 });
 
 var contactSchema = new mongoose.Schema({

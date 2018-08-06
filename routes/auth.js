@@ -34,6 +34,7 @@ module.exports = function(passport) {
       failureRedirect: "/login"
   }));
 
+  // Login through Facebook
   router.get('/auth/facebook', passport.authenticate('facebook'));
 
   router.get('/auth/facebook/callback',
@@ -41,6 +42,17 @@ module.exports = function(passport) {
     function(req, res) {
       // Successful Authentication, Redirect to Home Page
       res.redirect('/contacts');
+    }
+  );
+
+  // Login through Twitter
+  router.get('/auth/twitter', passport.authenticate('twitter'));
+
+  router.get('/auth/twitter/callback',
+    passport.authenticate('twitter', { failureRedirect: '/login' }),
+    function(req, res) {
+      // Successful Authentication, Redirect to Home Page
+      res.redirect('/');
     }
   );
 

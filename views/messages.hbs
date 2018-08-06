@@ -7,7 +7,7 @@
       <a href="/contacts" class="btn btn-secondary float-right mt-1 p-3">Back</a>
       <h1 class="text-center mt-2">{{#if contactName}}Your Conversation with {{contactName}}{{else}}All Messages Sent{{/if}}</h1>
 
-      <div class="container col-md-12 mt-4 pb-2" id="messageContainer" style="border: #5B6167 solid 5px; border-radius: 4px; height: 85%; overflow-y: scroll;">
+      <div class="container col-md-12 mt-4 pb-2" id="messageContainer">
         {{#each messages}}
           {{#if this.from}}
 

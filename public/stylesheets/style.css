@@ -185,3 +185,10 @@ html, body {
 .speech-bubble.message {
   color: white;
 }
+
+#messageContainer {
+  border: #5B6167 solid 5px;
+  border-radius: 4px;
+  height: 85%;
+  overflow-y: scroll;
+}

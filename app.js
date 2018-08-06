@@ -1,16 +1,19 @@
 // Main
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var express = require("express");
+var path = require("path");
+var logger = require("morgan");
+var cookieParser = require("cookie-parser");
+var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
 
 // Session
-var session = require('express-session');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+var session = require("express-session");
+var passport = require("passport");
+var LocalStrategy = require("passport-local").Strategy;
 var crypto = require("crypto");
-var FacebookStrategy = require('passport-facebook');
+var MongoStore = require('connect-mongo')(session);
+var FacebookStrategy = require("passport-facebook");
+var TwitterStrategy = require("passport-twitter");
 
 // Routes
 var routes = require('./routes/index');
@@ -33,7 +36,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport
-app.use(session({ secret: 'This is a very secret message.' }));
+mongoose.connect(process.env.MONGODB_URI);
+
+app.use(session({
+  secret: process.env.SECRET,
+  store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
 
 passport.serializeUser(function(user, done) {
   done(null, user._id);
@@ -82,6 +90,21 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, cb) {
     User.findOrCreate({ facebookId: profile.id }, { username: profile.displayName, phone: process.env.FROM_PHONE, pictureURL: profile.photos[0].value },
+      function (err, user) {
+        return cb(err, user);
+      }
+    );
+  }
+));
+
+passport.use(new TwitterStrategy({
+    consumerKey: TWITTER_CONSUMER_KEY,
+    consumerSecret: TWITTER_CONSUMER_SECRET,
+    callbackURL: "http://localhost:3000/auth/twitter/callback",
+    profileFields: ["id", "displayName", "photos"]
+  },
+  function(token, tokenSecret, profile, cb) {
+    User.findOrCreate({ twitterId: profile.id }, { username: profile.displayName, phone: process.env.FROM_PHONE, pictureURL: profile.photos[0].value },
       function (err, user) {
         return cb(err, user);
       }
