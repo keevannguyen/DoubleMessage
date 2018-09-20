@@ -6,7 +6,6 @@ var models = require('../models/models');
 var fromNumber = process.env.MY_TWILIO_NUMBER;
 
 module.exports = function(passport) {
-
   // GET Homepage
   router.get("/", function(req, res, next) {
     if ( !req.user )

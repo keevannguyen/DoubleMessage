@@ -36,11 +36,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Passport
+console.log(process.env.MONGODB_URI);
 mongoose.connect(process.env.MONGODB_URI);
 
 app.use(session({
   secret: process.env.SECRET,
-  store: new MongoStore({mongooseConnection: mongoose.connection})
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
 passport.serializeUser(function(user, done) {
@@ -89,8 +90,13 @@ passport.use(new FacebookStrategy({
     profileFields: ["id", "displayName", "photos"]
   },
   function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ facebookId: profile.id }, { username: profile.displayName, phone: process.env.FROM_PHONE, pictureURL: profile.photos[0].value },
+    console.log(profile);
+    User.findOrCreate({ facebookId: profile.id },
       function (err, user) {
+        user.username = profile.displayName;
+        user.phone = process.env.FROM_PHONE;
+        user.pictureURL = profile.photos[0].value;
+        user.save();
         return cb(err, user);
       }
     );
@@ -98,8 +104,8 @@ passport.use(new FacebookStrategy({
 ));
 
 passport.use(new TwitterStrategy({
-    consumerKey: TWITTER_CONSUMER_KEY,
-    consumerSecret: TWITTER_CONSUMER_SECRET,
+    consumerKey: process.env.TWITTER_CONSUMER_KEY,
+    consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
     callbackURL: "http://localhost:3000/auth/twitter/callback",
     profileFields: ["id", "displayName", "photos"]
   },
