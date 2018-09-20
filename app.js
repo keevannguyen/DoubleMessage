@@ -94,7 +94,6 @@ passport.use(new FacebookStrategy({
     User.findOrCreate({ facebookId: profile.id },
       function (err, user) {
         user.username = profile.displayName;
-        user.phone = process.env.FROM_PHONE;
         user.pictureURL = profile.photos[0].value;
         user.save();
         return cb(err, user);
@@ -110,8 +109,12 @@ passport.use(new TwitterStrategy({
     profileFields: ["id", "displayName", "photos"]
   },
   function(token, tokenSecret, profile, cb) {
-    User.findOrCreate({ twitterId: profile.id }, { username: profile.displayName, phone: process.env.FROM_PHONE, pictureURL: profile.photos[0].value },
+    User.findOrCreate({ twitterId: profile.id },
       function (err, user) {
+        console.log(user);
+        user.username = profile.displayName;
+        user.pictureURL = profile.photos[0].value;
+        user.save();
         return cb(err, user);
       }
     );
